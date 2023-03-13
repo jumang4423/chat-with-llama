@@ -1,5 +1,7 @@
 # chat-with-llama
 
+![waifu](./_img/waifu.png)
+
 lets chat with multiple characters with no aliments
 [code is peace of shit. do not consider it for production.]
 
