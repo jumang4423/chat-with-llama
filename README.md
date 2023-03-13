@@ -1,6 +1,7 @@
 # chat-with-llama
 
 lets chat with multiple characters with no aliments
+[code is peace of shit. do not consider it for production.]
 
 ## preparation
 1. make this project and prepare llama model.
@@ -29,9 +30,9 @@ if you try bigger llama model, read original readme from [llama.cpp](https://git
 
 2. prepare character json file. there are some examples in the ```character```folder
 
-3. specify quantized llama model with ```-m``` and character json file with ```-c```. now you can intract with llama.
+3. specify a character json file as a first argument of ```chat_with_llama.py```. now you can intract with llama.
 
 ``` bash
-./main -m ./models/7B/ggml-model-q4_0.bin -c ./character/chatGPT.json
+python3 chat_with_llama.py ./character/chatGPT.json
 ```
 
