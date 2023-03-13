@@ -85,8 +85,6 @@ struct llama_model {
 
 // load the model's weights from a file
 bool llama_model_load(const std::string & fname, llama_model & model, gpt_vocab & vocab, int n_ctx) {
-    printf("%s: loading model from '%s' - please wait ...\n", __func__, fname.c_str());
-
     auto fin = std::ifstream(fname, std::ios::binary);
     if (!fin) {
         fprintf(stderr, "%s: failed to open '%s'\n", __func__, fname.c_str());
@@ -123,17 +121,6 @@ bool llama_model_load(const std::string & fname, llama_model & model, gpt_vocab 
 
         n_ff = ((2*(4*hparams.n_embd)/3 + hparams.n_mult - 1)/hparams.n_mult)*hparams.n_mult;
         n_parts = LLAMA_N_PARTS.at(hparams.n_embd);
-
-        printf("%s: n_vocab = %d\n", __func__, hparams.n_vocab);
-        printf("%s: n_ctx   = %d\n", __func__, hparams.n_ctx);
-        printf("%s: n_embd  = %d\n", __func__, hparams.n_embd);
-        printf("%s: n_mult  = %d\n", __func__, hparams.n_mult);
-        printf("%s: n_head  = %d\n", __func__, hparams.n_head);
-        printf("%s: n_layer = %d\n", __func__, hparams.n_layer);
-        printf("%s: n_rot   = %d\n", __func__, hparams.n_rot);
-        printf("%s: f16     = %d\n", __func__, hparams.f16);
-        printf("%s: n_ff    = %d\n", __func__, n_ff);
-        printf("%s: n_parts = %d\n", __func__, n_parts);
     }
 
     // load vocab
@@ -216,8 +203,6 @@ bool llama_model_load(const std::string & fname, llama_model & model, gpt_vocab 
         ctx_size += n_ctx*n_layer*n_embd*ggml_type_sizef(GGML_TYPE_F32); // memory_v
 
         ctx_size += (5 + 10*n_layer)*256; // object overhead
-
-        printf("%s: ggml ctx size = %6.2f MB\n", __func__, ctx_size/(1024.0*1024.0));
     }
 
     // create the ggml context
@@ -303,8 +288,6 @@ bool llama_model_load(const std::string & fname, llama_model & model, gpt_vocab 
         model.memory_v = ggml_new_tensor_1d(ctx, GGML_TYPE_F32, n_elements);
 
         const size_t memory_size = ggml_nbytes(model.memory_k) + ggml_nbytes(model.memory_v);
-
-        printf("%s: memory_size = %8.2f MB, n_mem = %d\n", __func__, memory_size/1024.0/1024.0, n_mem);
     }
 
     const size_t file_offset = fin.tellg();
@@ -322,8 +305,6 @@ bool llama_model_load(const std::string & fname, llama_model & model, gpt_vocab 
             fname_part += "." + std::to_string(i);
         }
 
-        printf("%s: loading model part %d/%d from '%s'\n", __func__, i+1, n_parts, fname_part.c_str());
-
         fin = std::ifstream(fname_part, std::ios::binary);
         fin.seekg(file_offset);
 
@@ -331,8 +312,6 @@ bool llama_model_load(const std::string & fname, llama_model & model, gpt_vocab 
         {
             int n_tensors = 0;
             size_t total_size = 0;
-
-            printf("%s: ", __func__);
 
             while (true) {
                 int32_t n_dims;
@@ -503,8 +482,6 @@ bool llama_model_load(const std::string & fname, llama_model & model, gpt_vocab 
             }
 
             printf(" done\n");
-
-            printf("%s: model size = %8.2f MB / num tensors = %d\n", __func__, total_size/1024.0/1024.0, n_tensors);
         }
 
         fin.close();
@@ -776,8 +753,6 @@ int main(int argc, char ** argv) {
         params.seed = time(NULL);
     }
 
-    printf("%s: seed = %d\n", __func__, params.seed);
-
     std::mt19937 rng(params.seed);
     if (params.prompt.empty()) {
         params.prompt = gpt_random_prompt(rng);
@@ -821,9 +796,6 @@ int main(int argc, char ** argv) {
     printf("\n");
     printf("%s: prompt: '%s'\n", __func__, params.prompt.c_str());
     printf("%s: number of tokens in prompt = %zu\n", __func__, embd_inp.size());
-    for (int i = 0; i < (int) embd_inp.size(); i++) {
-        printf("%6d -> '%s'\n", embd_inp[i], vocab.id_to_token.at(embd_inp[i]).c_str());
-    }
     printf("\n");
     if (params.interactive) {
 #if defined (__unix__) || (defined (__APPLE__) && defined (__MACH__))
@@ -834,19 +806,7 @@ int main(int argc, char ** argv) {
         sigaction(SIGINT, &sigint_action, NULL);
 #endif
 
-        printf("%s: interactive mode on.\n", __func__);
-
-        if(antiprompt_inp.size()) {
-            printf("%s: reverse prompt: '%s'\n", __func__, params.antiprompt.c_str());
-            printf("%s: number of tokens in reverse prompt = %zu\n", __func__, antiprompt_inp.size());
-            for (int i = 0; i < (int) antiprompt_inp.size(); i++) {
-                printf("%6d -> '%s'\n", antiprompt_inp[i], vocab.id_to_token.at(antiprompt_inp[i]).c_str());
-            }
-            printf("\n");
-        }
     }
-    printf("sampling parameters: temp = %f, top_k = %d, top_p = %f, repeat_last_n = %i, repeat_penalty = %f\n", params.temp, params.top_k, params.top_p, params.repeat_last_n, params.repeat_penalty);
-    printf("\n\n");
 
     std::vector<gpt_vocab::id> embd;
 

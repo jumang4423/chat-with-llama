@@ -1,6 +1,6 @@
 {
   "character_name": "ChatGPT",
-  "temperature": "0.8",
+  "temperature": 0.8,
   "system": "The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.",
   "conversation_examples": [
     {

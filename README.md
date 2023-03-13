@@ -30,9 +30,10 @@ if you try bigger llama model, read original readme from [llama.cpp](https://git
 
 2. prepare character json file. there are some examples in the ```character```folder
 
-3. specify a character json file as a first argument of ```chat_with_llama.py```. now you can intract with llama.
+3. specify a character json file with ```-c``` and a quantized model data with ```-m```. 
+   here is 7B llama + ChatGPT example:
 
 ``` bash
-python3 chat_with_llama.py ./character/chatGPT.json
+python3 -u chat_with_llama.py -c ./character/chatGPT.json -m ./models/13B/ggml-model-q4_0.bin > tmp.txt && eval "$(cat tmp.txt)"
 ```
 
