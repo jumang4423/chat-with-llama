@@ -23,8 +23,9 @@ python3 convert-pth-to-ggml.py models/7B/ 1
 
 # quantize the model to 4-bits
 ./quantize ./models/7B/ggml-model-f16.bin ./models/7B/ggml-model-q4_0.bin 2
-
 ```
+
+if you try bigger llama model, read original readme from [llama.cpp](https://github.com/ggerganov/llama.cpp)
 
 2. prepare character json file. there are some examples in the ```character```folder
 
