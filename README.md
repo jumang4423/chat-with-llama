@@ -2,7 +2,7 @@
 
 ![waifu](./_img/waifu.png)
 
-lets chat with multiple characters with no aliments
+lets chat with multiple characters with no alignments
 [code is peace of shit. do not consider it for production.]
 
 ## preparation
